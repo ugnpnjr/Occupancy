@@ -311,7 +311,6 @@ par(mfrow=c(1, 1))
 # Bonus
 # Plot the relationship between (apparent) occupancy and covariate
 
-library(magrittr)   # for pipes
 library(dplyr)
 
 # I will demonstrate for elevation
