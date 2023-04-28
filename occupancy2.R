@@ -308,4 +308,28 @@ plot(psi, main="Occupancy model")
 plot(glm.occ, main="GLM")
 par(mfrow=c(1, 1))
 
+# Bonus
+# Plot the relationship between (apparent) occupancy and covariate
+
+library(magrittr)   # for pipes
+library(dplyr)
+
+# I will demonstrate for elevation
+# Prepare new data frame for prediction 
+newdata <- data.frame(elevation=seq(-1.7, 1.2, by=0.1), treecover=0, dvillage=0, droad=0)
+
+# Predict with lower and upper CIs
+pred.glm <- predict(glm.mod1, type="link", newdata=newdata, se.fit=TRUE) %>%
+  as.data.frame() %>%
+  mutate(elevation=seq(-1.7, 1.2, by=0.1),
+         lower=glm.mod1$family$linkinv(fit - 1.96*se.fit),
+         point.estimate=glm.mod1$family$linkinv(fit),
+         upper=glm.mod1$family$linkinv(fit + 1.96*se.fit))
+
+# Do the plot
+plot(point.estimate ~ elevation, pred.glm, type="l", lwd=2, ylim=c(0,1),
+     xlab="Elevation (standardised)", ylab="Apparent occupancy probability")
+lines(lower ~ elevation, pred.glm, type="l", col=gray(0.5))
+lines(upper ~ elevation, pred.glm, type="l", col=gray(0.5))
+
 ##################################### END ##################################
