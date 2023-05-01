@@ -1,6 +1,7 @@
 
 # Single-season occupancy model (SSOM) (MacKenzie et al., 2002)
 # April 2023
+# Ugyen Penjor, Fauna & Flora
 
 # Chimp data from Sapo NP, Liberia
 # 2016 Dry season
