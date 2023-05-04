@@ -18,7 +18,7 @@ library(MuMIn)
 ### ------------------------------------------------------------------------ ###
 
 # Load data 
-dat <- read.csv("Chimp_data_Sapo_2016_dry_season_data.csv", header=T)
+dat <- read.csv("your_data.csv", header=T)
 head(dat)
 
 # Extract detection history
