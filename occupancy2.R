@@ -256,7 +256,7 @@ mean(values(psi), na.rm=T)  # check the estimate with PAO estimate
 sd(values(psi), na.rm=T) 
 quantile(values(psi), probs = c(0.25, 0.75), na.rm=T)
 
-cellStats(psi, stat="mean", na.rm=T)
+cellStats(psi, stat="mean", na.rm=T)  # using a function in raster package
 
 ### -----------------------------------------------------------------------  ###
 
@@ -290,6 +290,7 @@ summary(glm.mod1)
 # Produce species distribution map
 beta.glm <- coef(glm.mod1)
 
+# Linear model for prediction
 logit.glm <- beta.glm[1] + (beta.glm[2]*forS) + (beta.glm[3]*eleS) + 
              (beta.glm[4]*vilS) + (beta.glm[5]*roaS)
 
@@ -304,6 +305,7 @@ round(cbind(SSOM=mean(values(psi), na.rm=T),
             GLM=mean(values(glm.occ), na.rm=T),
             NAIVE=naive.occ), 2)
 
+# Compare the prediction maps from SSOM and GLM
 par(mfrow=c(1, 2))
 plot(psi, main="Occupancy model")
 plot(glm.occ, main="GLM")
