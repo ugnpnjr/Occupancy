@@ -334,4 +334,8 @@ plot(mean ~ elevation, pred.glm, type="l", lwd=2, ylim=c(0,1),
 lines(lower ~ elevation, pred.glm, type="l", col=gray(0.5))
 lines(upper ~ elevation, pred.glm, type="l", col=gray(0.5))
 
+# Using visreg package
+visreg(fit=glm.mod1, xvar="elevation", scale="response", 
+       ylab="Habitat use", xlab="Elevation (standardised)")
+
 ##################################### END ##################################
