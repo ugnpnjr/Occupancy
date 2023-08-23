@@ -338,4 +338,85 @@ lines(upper ~ elevation, pred.glm, type="l", col=gray(0.5))
 visreg(fit=glm.mod1, xvar="elevation", scale="response", 
        ylab="Habitat use", xlab="Elevation (standardised)")
 
+
+############################################################################
+############################################################################
+
+# AUC
+
+# For all models within delta AIC 2
+# Essentially your model-average
+
+# Predict occupancy probability
+# Create data frame of all covariates in models within delta AIC 2
+occ.pred <- predict(d2modList, 
+                    newdata=data.frame(cbind("treecover"=SiteCov$treecover, 
+                                             "elevation"=SiteCov$elevation,
+                                             "dist_road"=siteCov$dist_road,
+                                             "dist_vil"=siteCov$dist_vil,
+                                             "dist_riv"=siteCov$dist_riv)), 
+                    type="state")
+
+# Extract required parameters to plot
+psi <- occ.pred$Predicted
+#y.true <- apply(detn, 1, max, na.rm=T)  # raw observations
+
+# A model list object
+modList <- list(mod4, mod5, mod2, mod6, mod3)
+
+# # Function to extract random effects using ranef()
+# extract_ranef <- function(model){
+#   ranef(model)
+# }
+# 
+# # Use lapply to run extract_ranef() on each model in the list
+# random_effects_list <- lapply(modList, extract_ranef)
+
+# Apply bup to model list object
+apply_bup <- function(model) {
+  random_effects <- ranef(model)
+  bup(random_effects, stat="mean")
+}
+
+bup_list <- purrr::map(modList, apply_bup)
+str(bup_list)
+b <- purrr::map(bup_list, round)
+
+# Calculate mean from the five objects in the list
+mean_b <- purrr::reduce(bup_list, `+`) / length(bup_list)
+z <- round(mean_b)
+
+#------------------------------------------------------------------------------#
+#------------------------------------------------------------------------------#
+
+# For a single model
+top.mod <- occu(~scale(effort) ~scale(elevation)+scale(treecover), data=sp.umf)
+re <- ranef(top.mod)
+str(re)
+EBUP <- bup(re, stat="mean")
+round(EBUP)
+z <- round(EBUP)
+
+# Predict occupancy probability
+occ.pred <- predict(top.mod, 
+                    newdata=data.frame(cbind("treecover"=SiteCov$treecover, 
+                                             "elevation"=SiteCov$elevation)), 
+                    type="state", inf.rm=T)
+
+# Extract required parameters to plot
+psi <- occ.pred$Predicted
+
+################################################################################
+
+# Make a plot
+library(pROC)
+proc.obj <- roc(z, psi, smoothed=T, 
+                ci=T, ci.alpha=0.9, stratified=F, legacy.axes = FALSE,
+                plot=T, auc.polygon=T, max.auc.polygon=T, grid=T, print.auc=T, show.thres=T)
+
+library(ROCR)
+pred <- prediction(psi, z)
+perf <- performance(pred, "tpr", "fpr")
+plot(perf, colorize=T)
+
 ##################################### END ##################################
