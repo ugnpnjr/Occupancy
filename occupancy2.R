@@ -350,11 +350,11 @@ visreg(fit=glm.mod1, xvar="elevation", scale="response",
 # Predict occupancy probability
 # Create data frame of all covariates in models within delta AIC 2
 occ.pred <- predict(d2modList, 
-                    newdata=data.frame(cbind("treecover"=SiteCov$treecover, 
-                                             "elevation"=SiteCov$elevation,
-                                             "dist_road"=siteCov$dist_road,
-                                             "dist_vil"=siteCov$dist_vil,
-                                             "dist_riv"=siteCov$dist_riv)), 
+                    newdata=data.frame(cbind("treecover" = SiteCov$treecover, 
+                                             "elevation" = SiteCov$elevation,
+                                             "dist_road" = siteCov$dist_road,
+                                             "dist_vil"  = siteCov$dist_vil,
+                                             "dist_riv"  = siteCov$dist_riv)), 
                     type="state")
 
 # Extract required parameters to plot
