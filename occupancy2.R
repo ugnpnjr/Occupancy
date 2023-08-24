@@ -343,6 +343,7 @@ visreg(fit=glm.mod1, xvar="elevation", scale="response",
 ############################################################################
 
 # AUC
+# August 2023
 
 # For all models within delta AIC 2
 # Essentially your model-average
