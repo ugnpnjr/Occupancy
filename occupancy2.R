@@ -49,7 +49,6 @@ naive.occ <- sum(ifelse(rowSums(detn, na.rm=T)>0, 1, 0))/nrow(detn)
 naive.occ
 
 # Prepare unmarked frame object 
-?unmarkedFrameOccu
 sp.umf <- unmarkedFrameOccu(y=detn, siteCovs=site.cov, obsCovs=list(human=humanS))
 str(sp.umf)
 
@@ -69,7 +68,6 @@ aictab(cand.set=det.mod, second.ord=F)
 # Then model occupancy
 globalmod <- occu(~human+tlength ~dvillage+droad+driver+treecover+elevation,
                   data=sp.umf)
-globalmod
 
 ### -----------------------------------------------------------------------  ###
 
@@ -168,11 +166,11 @@ confint(occ.avg, level=0.95)
 
 ### -----------------------------------------------------------------------  ###
 
-# Predict relationship between occupancy and a covariate
+# Predict the relationship between occupancy and a covariate
 
 # Elevation 
 # Set other covariates to 0. 
-# Since we're using standardised value, 0 is equivalent to setting 
+# Since we're using a standardised value, 0 is equivalent to setting 
 # the raw cov at their mean.
 newData <- data.frame(elevation=seq(-1.7, 1.2, by=0.1), treecover=0)
 occ.prob <- predict(mod3, type="state", newdata=newData, appendData=T)
@@ -245,7 +243,7 @@ beta <- coef(occ.avg)
 # Plug into the linear model with raster covariates
 logitPsi <- beta[1] + (beta[2]*forS) + (beta[3]*eleS) + (beta[7]*vilS) + (beta[8]*roaS)
 
-# Convert to probability scale
+# Convert to the probability scale
 psi <- exp(logitPsi)/(1+exp(logitPsi))   
 
 # Plot the map
@@ -361,21 +359,23 @@ occ.pred <- predict(d2modList,
 # Extract required parameters to plot
 psi <- occ.pred$Predicted
 
-# A model list object
+# A model list object - note here you have all the models within delta AIC 2 
+# or any threshold of your choice
 modList <- list(mod4, mod5, mod2, mod6, mod3)
 
-# Apply ranef() and bup() functions to model list object
+# Create a function to incorporate ranef() and bup() functions to model list object
 apply_bup <- function(model){
   random_effects <- ranef(model)
   bup(random_effects, stat="mean")
 }
 
+# Apply the custom function to your model list
 bup_list <- purrr::map(modList, apply_bup)
 str(bup_list)
 
-# Calculate mean from the five objects in the list
+# Calculate the mean from all the objects in the list
 mean_b <- purrr::reduce(bup_list, `+`) / length(bup_list)
-z <- round(mean_b)
+z <- round(mean_b)   # rounding off to 1s and 0s
 
 #------------------------------------------------------------------------------#
 #------------------------------------------------------------------------------#
