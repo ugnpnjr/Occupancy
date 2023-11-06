@@ -246,6 +246,8 @@ logitPsi <- beta[1] + (beta[2]*forS) + (beta[3]*eleS) + (beta[7]*vilS) + (beta[8
 # Convert to the probability scale
 psi <- exp(logitPsi)/(1+exp(logitPsi))   
 
+# Food for thought: Jensen's Inequality in prediction mapping using linear equations
+
 # Plot the map
 plot(psi, main="Chimpanzee occupancy 2016 (dry season)")
 
